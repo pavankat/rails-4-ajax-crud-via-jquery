@@ -32,6 +32,36 @@ ready = function() {
         });
     };
 
+    function deletePlayer(event) {
+
+        event.preventDefault();
+
+        // Pop up a confirmation dialog
+        var confirmation = confirm('Are you sure you want to delete this player?');
+
+        // Check and make sure they really want to delete
+        if (confirmation === true) {
+
+            // If they did, do our delete
+            $.ajax({
+                type: 'DELETE',
+                url: '/football_players/' + $(this).data('id')
+            }).done(function( response ) {
+                //response is the object that was deleted because that's what we returned in the destroy controller method
+                populateTable();
+                
+            });
+
+        }
+        else {
+
+            // If they said no to the confirm, do nothing
+            return false;
+
+        }
+
+    };
+
     // // Add Spot
     // function addSpot(event) {
     //     event.preventDefault();
@@ -80,45 +110,6 @@ ready = function() {
     //         console.log('Please fill in all fields');
     //         return false;
     //     }
-    // };
-
-    // // Delete Spot
-    // function deleteSpot(event) {
-
-    //     event.preventDefault();
-
-    //     // Pop up a confirmation dialog
-    //     var confirmation = confirm('Are you sure you want to delete this spot?');
-
-    //     // Check and make sure they really want to delete
-    //     if (confirmation === true) {
-
-    //         // If they did, do our delete
-    //         $.ajax({
-    //             type: 'DELETE',
-    //             url: '/chickenspots/deletespot/' + $(this).attr('rel')
-    //         }).done(function( response ) {
-
-    //             // Check for a successful (blank) response
-    //             if (response.msg === '') {
-    //             }
-    //             else {
-    //                 console.log('Error: ' + response);
-    //             }
-
-    //             // Update the table
-    //             populateTable();
-
-    //         });
-
-    //     }
-    //     else {
-
-    //         // If they said no to the confirm, do nothing
-    //         return false;
-
-    //     }
-
     // };
 
     // // Edit Spot
@@ -222,7 +213,7 @@ ready = function() {
     // $('#btnAddChickenSpot').on('click', addSpot);
 
     // // Delete User link click
-    // $('#friedChickenList table tbody').on('click', 'td a.linkdeletespot', deleteSpot);
+    $('#tablePlayersRows').on('click', '.linkDeletePlayer', deletePlayer);
 
     // $('#friedChickenList table tbody').on('click', 'td a.linkeditspot', editSpot);
 
