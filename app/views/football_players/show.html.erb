@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @football_player.name %>
+</p>
+
+<p>
+  <strong>Handsizeinches:</strong>
+  <%= @football_player.handSizeInches %>
+</p>
+
+<%= link_to 'Edit', edit_football_player_path(@football_player) %> |
+<%= link_to 'Back', football_players_path %>

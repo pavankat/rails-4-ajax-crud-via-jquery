@@ -1,0 +1,27 @@
+<h1>Listing football_players</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Handsizeinches</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @football_players.each do |football_player| %>
+      <tr>
+        <td><%= football_player.name %></td>
+        <td><%= football_player.handSizeInches %></td>
+        <td><%= link_to 'Show', football_player %></td>
+        <td><%= link_to 'Edit', edit_football_player_path(football_player) %></td>
+        <td><%= link_to 'Destroy', football_player, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Football player', new_football_player_path %>
