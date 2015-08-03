@@ -12,9 +12,6 @@ ready = function() {
         // jQuery AJAX call for JSON
         $.getJSON( '/football_players', function( data ) {
 
-            // For large apps, this is a bad idea, there should be a limit of players that get displayed and pagination built in
-            footballPlayers = data;
-
             //Object {id: 1, name: "Drew Brees", handSizeInches: 10, created_at: "2015-08-03T15:02:10.751Z", updated_at: "2015-08-03T15:02:10.751Z"}
 
             // For each item in our JSON, add a table row and cells to the content string

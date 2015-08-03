@@ -11,16 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803123252) do
+ActiveRecord::Schema.define(version: 20150803174905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "football_players", force: true do |t|
     t.string   "name"
-    t.integer  "handSizeInches"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "handSizeInches"
   end
 
 end
