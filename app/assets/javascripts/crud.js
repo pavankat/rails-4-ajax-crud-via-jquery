@@ -1,7 +1,7 @@
 var ready;
 ready = function() {
-    // friedChickenList data array for filling in info box
     var footballPlayers = [];
+    var editPlayerId = null;
 
     // Fill table with data
     function populateTable() {
@@ -20,7 +20,7 @@ ready = function() {
             // For each item in our JSON, add a table row and cells to the content string
             $.each(data, function(){
                 tableContent += '<tr>';
-                tableContent += '<td><a href="#" class="linkshowspot" rel="' + this._id + '">' + this.name + '</a></td>';
+                tableContent += '<td>' + this.name + '</td>';
                 tableContent += '<td>' + this.handSizeInches + '</td>';
                 tableContent += '<td><a href="#" class="linkEditPlayer" data-id="' + this.id + '">edit</a></td>';
                 tableContent += '<td><a href="#" class="linkDeletePlayer" data-id="' + this.id + '">delete</a></td>';
@@ -62,164 +62,128 @@ ready = function() {
 
     };
 
-    // // Add Spot
-    // function addSpot(event) {
-    //     event.preventDefault();
+    function newPlayer(event) {
+        event.preventDefault();
+        $('#inputs').removeClass('hide');
+        $('#savePlayerButton').removeClass('hide');
+        $('#updatePlayerButton').addClass('hide');
+    }
 
-    //     // Super basic validation - increase errorCount variable if any fields are blank
-    //     var errorCount = 0;
-    //     $('#addSpot input').each(function(index, val) {
-    //         if($(this).val() === '') { errorCount++; }
-    //     });
+    function addPlayer(event) {
+        event.preventDefault();
 
-    //     // Check and make sure errorCount's still at zero
-    //     if(errorCount === 0) {
+        var newPlayer = {
+            'name': $('#name').val(),
+            'handSizeInches': $('#handSizeInches').val()
+        };
 
-    //         // If it is, compile all user info into one object
-    //         var newSpot = {
-    //             'restaurantname': $('#addSpot fieldset input#inputRestaurantName').val(),
-    //             'address': $('#addSpot fieldset input#inputAddress').val(),
-    //             'website': $('#addSpot fieldset input#inputWebsite').val()
-    //         }
+        var newPlayerFormatted = {
+            'football_player' : newPlayer
+        };
 
-    //         // Use AJAX to post the object to our adduser service
-    //         $.ajax({
-    //             type: 'POST',
-    //             data: newSpot,
-    //             url: '/chickenspots/addspot',
-    //             dataType: 'JSON'
-    //         }).done(function( response ) {
+        // Use AJAX to post the object to our adduser service
+        $.ajax({
+            type: 'POST',
+            data: newPlayerFormatted,
+            url: '/football_players',
+            dataType: 'JSON'
+        }).done(function( response ) {
 
-    //             if (response === 200) {
+            // Clear the form inputs
+            $('input').val('');
 
-    //                 // Clear the form inputs
-    //                 $('#addSpot fieldset input').val('');
+            // Update the table
+            populateTable();
+            $('#inputs').addClass('hide');
+ 
+        }).fail(function( jqXHR, textStatus ) {
+            alert(jqXHR.responseText);
+        });
+        
+    };
 
-    //                 // Update the table
-    //                 populateTable();
+    function editPlayer(event) {
 
-    //             }else {
-    //                 // If something goes wrong, alert the error message that our service returned
-    //                 console.log('Error: ' + response);
+        // Prevent Link from Firing
+        event.preventDefault();
 
-    //             }
-    //         });
-    //     }
-    //     else {
-    //         // If errorCount is more than 0, error out
-    //         console.log('Please fill in all fields');
-    //         return false;
-    //     }
-    // };
+        $('#inputs').removeClass('hide')
+        $('#savePlayerButton').addClass('hide');
+        $('#updatePlayerButton').removeClass('hide');
 
-    // // Edit Spot
-    // function editSpot(event) {
+        // Retrieve the id from the link
+        var thisId = $(this).data('id');
 
-    //     // Prevent Link from Firing
-    //     event.preventDefault();
+        $.getJSON('/football_players/' + thisId).done(function(data) {
+            //Populate Edit Form
+            $('#name').val(data.name);
+            $('#handSizeInches').val(data.handSizeInches);
 
-    //     // Retrieve the id from the link rel attribute
-    //     var thisId = $(this).attr('rel');
+            $('input').removeClass('hide');
+            $('#savePlayerButton').addClass('hide');
+            $('#updatePlayerButton').removeClass('hide');
 
-    //     // Get our Fried Chicken Spot Object
-    //     $.getJSON('/chickenspots/friedchickenspot/' + thisId).done(function(data) {
-    //         var thisRestaurantObject = data;
+            //we need this to update the player in the updatePlayer function
+            editPlayerId = data.id;
+         })
+    }
 
-    //         //Populate Edit Form
-    //         $('#editFriedChicken fieldset input#inputRestaurantName').val(thisRestaurantObject.restaurantname);
-    //         $('#editFriedChicken fieldset input#inputAddress').val(thisRestaurantObject.address);
-    //         $('#editFriedChicken fieldset input#inputWebsite').val(thisRestaurantObject.website);
+    function cancel(){
+        $('input').val('');
+        $('#inputs').addClass('hide');
+    }
+
+    function updatePlayer(event){
+        var editPlayer = {
+            'name': $('#name').val(),
+            'handSizeInches': $('#handSizeInches').val()
+        };
+
+        var editPlayerFormatted = {
+            'football_player' : editPlayer
+        };
+
+        // Use AJAX to post the object to our adduser service
+        $.ajax({
+            type: 'PUT',
+            data: editPlayerFormatted,
+            url: '/football_players/' + editPlayerId, //editPlayerId is a global variable we set in the editPlayer function
+            dataType: 'JSON'
+        }).done(function( response ) {   
+
+            // Update the table
+            populateTable();
+
+            //erase input
+            $('input').val('');
             
-    //         $('#addSpotH2').addClass('hide');
-    //         $('#addSpot').addClass('hide');
+            //set edit player id to null
+            editPlayerId = null;
 
-    //         $('#editSpotH2').removeClass('hide');
-    //         $('#editFriedChicken').removeClass('hide');
-
-    //         //set this as a global variable
-    //         //we need this to update the user in the updateSpot function
-    //         editFriedChickenId = thisRestaurantObject._id;
-    //      })
-    // }
-
-    // // Update Spot
-    // function updateSpot(event){
-    //     // Super basic validation - increase errorCount variable if any fields are blank
-    //     var errorCount = 0;
-    //     $('#editFriedChicken input').each(function(index, val) {
-    //         if($(this).val() === '') { errorCount++; }
-    //     });
-
-    //     // Check and make sure errorCount's still at zero
-    //     if(errorCount === 0) {
-
-    //         // If it is, compile all spot info into one object
-    //         var editSpot = {
-    //             'restaurantname': $('#editFriedChicken fieldset input#inputRestaurantName').val(),
-    //             'address': $('#editFriedChicken fieldset input#inputAddress').val(),
-    //             'website': $('#editFriedChicken fieldset input#inputWebsite').val()
-    //         }
-
-    //         // Use AJAX to post the object to our adduser service
-    //         $.ajax({
-    //             type: 'PUT',
-    //             data: editSpot,
-    //             url: '/chickenspots/updatefriedchicken/' + editFriedChickenId, //editFriedChickenId is a global variable we set in the editUser function
-    //             dataType: 'JSON'
-    //         }).done(function( response ) {
-                
-    //             // Check for successful (blank) response
-    //             if (response === 200) {
-
-    //                 // Clear the edit form inputs, hide the edit form and 
-    //                 hideAndClearEditShowAddForm();
-
-    //                 // Update the table
-    //                 populateTable();
-
-    //             }else {
-
-    //                 // If something goes wrong, alert the error message that our service returned
-    //                 console.log('Error: ' + response);
-
-    //             }
-    //         }).fail(function( jqXHR, textStatus ) {
-    //           console.log( "Request failed: " + textStatus );
-    //         });
-    //     }
-    //     else {
-    //         // If errorCount is more than 0, error out
-    //         console.log('Please fill in all fields');
-    //         return false;
-    //     }
-    // }
-
-    // function hideAndClearEditShowAddForm(){
-    //     $('#editSpotH2').addClass('hide');
-    //     $('#editFriedChicken').addClass('hide');
-
-    //     $('#addSpotH2').removeClass('hide');
-    //     $('#addSpot').removeClass('hide');
-
-    //     $('#editFriedChicken fieldset input#inputRestaurantName').val('');
-    //     $('#editFriedChicken fieldset input#inputAddress').val('');
-    //     $('#editFriedChicken fieldset input#inputWebsite').val('');
-    // }
+        }).fail(function( jqXHR, textStatus ) {
+          alert(jqXHR.responseText);
+        });
+    }
 
     // Populate the user table on initial page load
     populateTable();
 
-    // // Add User button click
-    // $('#btnAddChickenSpot').on('click', addSpot);
+    // New Player link click
+    $('#newFootballPlayer').on('click', newPlayer);
 
-    // // Delete User link click
+    // Save Player link click
+    $('#savePlayerButton').on('click', addPlayer);
+
+    // Delete Player link click
     $('#tablePlayersRows').on('click', '.linkDeletePlayer', deletePlayer);
 
-    // $('#friedChickenList table tbody').on('click', 'td a.linkeditspot', editSpot);
+    // Show Edit Form
+    $('#tablePlayersRows').on('click', '.linkEditPlayer', editPlayer);
 
-    // $('#btnEditChickenSpot').on('click', updateSpot);
+    // Update That Player
+    $('#updatePlayerButton').on('click', updatePlayer);
 
-    // $('#btnCancelEdit').on('click', hideAndClearEditShowAddForm)
+    $('#cancelButton').on('click', cancel)
 };
 
 $(document).ready(ready);

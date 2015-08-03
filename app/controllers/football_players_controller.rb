@@ -15,7 +15,7 @@ class FootballPlayersController < ApplicationController
     if football_player.save
       render json: football_player 
     else
-      render json: @football_player.errors, status: :unprocessable_entity #uses 422 for the status code - http://guides.rubyonrails.org/layouts_and_rendering.html
+      render json: football_player.errors, status: :unprocessable_entity #uses 422 for the status code - http://guides.rubyonrails.org/layouts_and_rendering.html
     end
   end
 
