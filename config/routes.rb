@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root to: 'static#index'
   resources :football_players, except: [:new, :edit]
 
   # The priority is based upon order of creation: first created -> highest priority.
