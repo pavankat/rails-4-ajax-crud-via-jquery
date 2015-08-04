@@ -1,28 +1,11 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is an example app of how to do ajax crud in rails 4 via jQuery
+Things you may want to cover. We're not using unobtrusive JavaScript or templates.
 
-Things you may want to cover:
+The root of the application is sent to the static controller's index action. So look in static/index.html.erb to see the html.
 
-* Ruby version
+The "internal API" part of this app is located in the controllers/football_players_controller.rb file.
 
-* System dependencies
+The ajax happens in the javascripts/crud.js file.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
